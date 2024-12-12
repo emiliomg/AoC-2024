@@ -6,7 +6,27 @@ import kotlin.math.abs
 
 object Day1 : AoCSolution<Long, Long> {
     override fun star1(raw: String): Long {
-        val (left, right) = raw
+        val (left, right) = fetchAndConvert(raw)
+
+        val result = left.zip(right).sumOf { (a, b) ->
+            abs(a - b)
+        }
+
+        return result
+    }
+
+    override fun star2(raw: String): Long {
+        val (left, right) = fetchAndConvert(raw)
+
+        val result = left.fold(0L) { acc, elem ->
+            acc + (elem * right.count { it == elem })
+        }
+
+        return result
+    }
+
+    private fun fetchAndConvert(raw: String): Pair<List<Long>, List<Long>> {
+        val result = raw
             .asStringList()
             .map { line: String ->
                 val elems = line.split("   ")
@@ -17,14 +37,7 @@ object Day1 : AoCSolution<Long, Long> {
                 first.sorted() to second.sorted()
             }
 
-        val result = left.zip(right).sumOf { (a, b) ->
-            abs(a - b)
-        }
-
         return result
     }
 
-    override fun star2(raw: String): Long {
-        TODO()
-    }
 }

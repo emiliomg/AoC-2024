@@ -9,8 +9,8 @@ class Day1Test : FunSpec({
         examplesStar1 = listOf(
             "day1/example.txt" to 11
         ),
-        puzzleStar1 = "day1/input.txt" to 2192892,
-//        examplesStar2 = listOf("day1/exampleY.txt" to 123),
-//        puzzleStar2 = "day1/input.txt" to 123
+        puzzleStar1 = "day1/input.txt" to 2192892L,
+        examplesStar2 = listOf("day1/example.txt" to 31),
+        puzzleStar2 = "day1/input.txt" to 22962826L
     ))
 })
