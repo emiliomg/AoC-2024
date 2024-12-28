@@ -19,6 +19,25 @@ object Day3 : AoCSolution<Long, Long> {
     }
 
     override fun star2(raw: String): Long {
-        TODO()
+        val line = raw.asStringList().joinToString(separator = "")
+        val findCommand: Regex = "(mul\\(\\d+,\\d+\\)|do\\(\\)|don't\\(\\))+?".toRegex()
+        val extractValue: Regex = "mul\\((\\d+),(\\d+)\\)".toRegex()
+
+        val commands = findCommand.findAll(line).toList().map { it.value }
+        val result = commands.fold(Pair(0L, false)) { (acc, suspendMul), cmd ->
+            when (cmd) {
+                "do()" -> acc to false
+                "don't()" -> acc to true
+                else -> when(suspendMul) {
+                    true -> acc to true
+                    false -> {
+                        val (a, b) = extractValue.matchEntire(cmd)!!.groupValues.takeLast(2)
+                        acc + (a.toLong() * b.toLong()) to false
+                    }
+                }
+            }
+        }
+
+        return result.first
     }
 }
