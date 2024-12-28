@@ -1,5 +1,6 @@
-package emiliomg.aoc.y2024.util
+package emiliomg.aoc.y2024.testutil
 
+import emiliomg.aoc.y2024.util.AoCSolution
 import io.kotest.core.spec.style.funSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
