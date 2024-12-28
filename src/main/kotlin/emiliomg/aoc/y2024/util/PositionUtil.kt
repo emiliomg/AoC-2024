@@ -40,15 +40,18 @@ object PositionUtil {
     }
 
     enum class Direction(val modX: Int, val modY: Int) {
-        NORTH(0, 1),
-        NORTHEAST(1, 1),
-        EAST(1, 0),
-        SOUTHEAST(1, -1),
-        SOUTH(0, -1),
-        SOUTHWEST(-1, -1),
-        WEST(-1, 0),
-        NORTHWEST(-1, 1)
+        NORTH(0, -1) { override fun opposite(): Direction = SOUTH },
+        NORTHEAST(1, -1) { override fun opposite(): Direction = SOUTHWEST },
+        EAST(1, 0) { override fun opposite(): Direction = WEST },
+        SOUTHEAST(1, 1) { override fun opposite(): Direction = NORTHWEST },
+        SOUTH(0, 1) { override fun opposite(): Direction = NORTH },
+        SOUTHWEST(-1, 1) { override fun opposite(): Direction = NORTHEAST },
+        WEST(-1, 0) { override fun opposite(): Direction = EAST },
+        NORTHWEST(-1, -1) { override fun opposite(): Direction = SOUTHEAST };
+
+        abstract fun opposite(): Direction
     }
 
     val CardinalDirections = listOf(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)
+    val InterCardinalDirections = listOf(Direction.NORTHEAST, Direction.SOUTHEAST, Direction.SOUTHWEST, Direction.NORTHWEST)
 }

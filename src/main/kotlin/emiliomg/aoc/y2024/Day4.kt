@@ -18,7 +18,8 @@ object Day4 : AoCSolution<Int, Int> {
                         newPoint to acc + matrix.charAt(newPoint)
                     }
 
-                    if (directionalString.second.joinToString(separator = "") == "MAS") 1 else 0
+                    val joinedDirectionalString = directionalString.second.joinToString(separator = "")
+                    if (joinedDirectionalString == "MAS") 1 else 0
                 }.sum()
 
                 xmasStringsStartingFromThisPosition
@@ -30,6 +31,31 @@ object Day4 : AoCSolution<Int, Int> {
     }
 
     override fun star2(raw: String): Int {
-        TODO()
+        val matrix = Matrix.fromInput(raw)
+
+        val result: List<Int> = matrix.flatMap { point, char ->
+            if (char != 'A') {
+                0
+            } else {
+                val xmasStringCenteredHere = PositionUtil.InterCardinalDirections.map { directionToCheck ->
+                    val startingPoint = point + directionToCheck.opposite()
+
+                    val directionalString = (1..2).fold(startingPoint to listOf<Char>(matrix.charAt(startingPoint))) { (currentPoint, acc), _ ->
+                        val newPoint = currentPoint + directionToCheck
+                        newPoint to acc + matrix.charAt(newPoint)
+                    }
+
+                    val joinedDirectionalString = directionalString.second.joinToString(separator = "")
+
+                    if (joinedDirectionalString == "MAS") 1 else 0
+                }.sum()
+
+                if (xmasStringCenteredHere == 2) 1 else 0
+            }
+
+        }
+
+        return result.sum()
+
     }
 }
