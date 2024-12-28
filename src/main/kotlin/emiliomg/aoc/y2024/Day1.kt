@@ -1,7 +1,7 @@
 package emiliomg.aoc.y2024
 
-import de.emiliomg.aoc.y2024.util.AoCSolution
-import de.emiliomg.aoc.y2024.util.asStringList
+import emiliomg.aoc.y2024.util.AoCSolution
+import emiliomg.aoc.y2024.util.StringUtil.asStringList
 import kotlin.math.abs
 
 object Day1 : AoCSolution<Long, Long> {

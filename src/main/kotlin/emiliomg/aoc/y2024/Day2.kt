@@ -1,7 +1,7 @@
 package emiliomg.aoc.y2024
 
-import de.emiliomg.aoc.y2024.util.AoCSolution
-import de.emiliomg.aoc.y2024.util.asProcessedList
+import emiliomg.aoc.y2024.util.AoCSolution
+import emiliomg.aoc.y2024.util.StringUtil.asProcessedList
 import kotlin.math.abs
 
 typealias Report = List<Long>
