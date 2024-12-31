@@ -25,6 +25,14 @@ object PositionUtil {
             }
         }
 
+        fun findChar(searchMe: Char): List<Point> {
+            return data.flatMapIndexed { y, line ->
+                line.mapIndexed { x, char ->
+                    if (char == searchMe) Point(x, y) else null
+                }
+            }.filterNotNull()
+        }
+
         companion object {
             fun fromInput(raw: String): Matrix {
                 val data = raw
@@ -40,16 +48,50 @@ object PositionUtil {
     }
 
     enum class Direction(val modX: Int, val modY: Int) {
-        NORTH(0, -1) { override fun opposite(): Direction = SOUTH },
-        NORTHEAST(1, -1) { override fun opposite(): Direction = SOUTHWEST },
-        EAST(1, 0) { override fun opposite(): Direction = WEST },
-        SOUTHEAST(1, 1) { override fun opposite(): Direction = NORTHWEST },
-        SOUTH(0, 1) { override fun opposite(): Direction = NORTH },
-        SOUTHWEST(-1, 1) { override fun opposite(): Direction = NORTHEAST },
-        WEST(-1, 0) { override fun opposite(): Direction = EAST },
-        NORTHWEST(-1, -1) { override fun opposite(): Direction = SOUTHEAST };
+        NORTH(0, -1) {
+            override fun opposite(): Direction = SOUTH
+            override fun left90(): Direction = WEST
+            override fun right90(): Direction = EAST
+        },
+        NORTHEAST(1, -1) {
+            override fun opposite(): Direction = SOUTHWEST
+            override fun left90(): Direction = NORTHWEST
+            override fun right90(): Direction = SOUTHEAST
+             },
+        EAST(1, 0) {
+            override fun opposite(): Direction = WEST
+            override fun left90(): Direction = NORTH
+            override fun right90(): Direction = SOUTH
+       },
+        SOUTHEAST(1, 1) {
+            override fun opposite(): Direction = NORTHWEST
+            override fun left90(): Direction = NORTHEAST
+            override fun right90(): Direction = SOUTHWEST
+            },
+        SOUTH(0, 1) {
+            override fun opposite(): Direction = NORTH
+            override fun left90(): Direction = EAST
+            override fun right90(): Direction = WEST
+        },
+        SOUTHWEST(-1, 1) {
+            override fun opposite(): Direction = NORTHEAST
+            override fun left90(): Direction = SOUTHEAST
+            override fun right90(): Direction = NORTHWEST
+             },
+        WEST(-1, 0) {
+            override fun opposite(): Direction = EAST
+            override fun left90(): Direction = SOUTH
+            override fun right90(): Direction = NORTH
+        },
+        NORTHWEST(-1, -1) {
+            override fun opposite(): Direction = SOUTHEAST
+            override fun left90(): Direction = SOUTHWEST
+            override fun right90(): Direction = NORTHEAST
+        };
 
         abstract fun opposite(): Direction
+        abstract fun left90(): Direction
+        abstract fun right90(): Direction
     }
 
     val CardinalDirections = listOf(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)
