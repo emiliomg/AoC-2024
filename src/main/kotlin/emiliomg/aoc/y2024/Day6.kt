@@ -6,35 +6,64 @@ import emiliomg.aoc.y2024.util.PositionUtil.Direction
 import emiliomg.aoc.y2024.util.PositionUtil.Matrix
 
 object Day6 : AoCSolution<Int, Int> {
+
+    private const val OBSTACLE = '#'
+    private const val STARTINGGUARD = '^'
+
     override fun star1(raw: String): Int {
-        val matrix = Matrix.fromInput(raw)
-        val startingGuard = Guard(matrix.findChar('^').first(), Direction.NORTH)
+        val (matrix, startingGuard) = fetchAndPrepareData(raw)
 
-        // It is assumed that the current position is already part of the "step" list
-        tailrec fun step(guard: Guard, steps: List<Point>): List<Point> {
-            val nextPosition = guard.position + guard.direction
+        val (visitedGuardPositions, _) = getVisitedPointsInMaze(matrix, startingGuard, listOf(startingGuard))
 
-            if (!matrix.hasInBounds(nextPosition)) return steps
-
-            if (matrix.charAt(nextPosition) == '#')
-                return step(guard.turnRight(), steps)
-
-            val newGuard = guard.moveForward()
-
-            return step(newGuard, steps + newGuard.position)
-        }
-
-        val visitedPoints = step(startingGuard, listOf(startingGuard.position))
-
-        return visitedPoints.toSet().size
+        return visitedGuardPositions.map { it.position }.toSet().size
     }
 
     override fun star2(raw: String): Int {
-        TODO()
+        val (matrix, startingGuard) = fetchAndPrepareData(raw)
+
+        val possiblePointsForNewObstacle = getVisitedPointsInMaze(matrix, startingGuard, listOf(startingGuard))
+            .guardPositions
+            .map { it.position }
+            .toSet()
+            .minus(startingGuard.position)
+
+        val pointsForNewObstacle: Map<Point,Boolean> = possiblePointsForNewObstacle.map { newObstaclePosition ->
+            val newMatrix = matrix.replacePointWith(newObstaclePosition, OBSTACLE)
+            val (_, isLoop) = getVisitedPointsInMaze(newMatrix, startingGuard, listOf(startingGuard))
+
+            newObstaclePosition to isLoop
+        }.toMap().filterValues { it }
+
+        return pointsForNewObstacle.size
+    }
+
+    private data class MazeResult(val guardPositions: List<Guard>, val loopFound: Boolean)
+
+    // It is assumed that the current position is already part of the "step" list
+    private tailrec fun getVisitedPointsInMaze(matrix: Matrix, guard: Guard, steps: List<Guard>): MazeResult {
+        val nextGuard = guard.copy(position = guard.position + guard.direction)
+
+        if (!matrix.hasInBounds(nextGuard.position)) return MazeResult(steps, false)
+
+        if (matrix.charAt(nextGuard.position) == OBSTACLE)
+            return getVisitedPointsInMaze(matrix, guard.turnRight(), steps)
+
+        if (steps.contains(nextGuard))
+            return MazeResult(steps, true)
+
+        val newGuard = guard.moveForward()
+
+        return getVisitedPointsInMaze(matrix, newGuard, steps + newGuard)
+    }
+
+    private fun fetchAndPrepareData(raw: String): Pair<Matrix, Guard> {
+        val matrix = Matrix.fromInput(raw)
+        val startingGuard = Guard(matrix.findChar(STARTINGGUARD).first(), Direction.NORTH)
+        return Pair(matrix, startingGuard)
     }
 
     private data class Guard(val position: Point, val direction: Direction) {
-        fun turnRight(): Guard = Guard(position, direction.right90())
-        fun moveForward(): Guard = Guard(position + direction, direction)
+        fun turnRight(): Guard = copy(direction = direction.right90())
+        fun moveForward(): Guard = copy(position = position + direction)
     }
 }
