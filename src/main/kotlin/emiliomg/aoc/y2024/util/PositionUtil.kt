@@ -11,20 +11,6 @@ object PositionUtil {
             else
                 data[p.y][p.x]
 
-        // This method assumes each line to have the same amount of elements
-        // This assumption is not checked anywhere
-        fun hasInBounds(p: Point): Boolean =
-            p.x in data[0].indices &&
-            p.y in data.indices
-
-        fun <T> flatMap(f: (Point, Char) -> T): List<T> {
-            return data.flatMapIndexed { y, line ->
-                line.mapIndexed { x, c ->
-                    f(Point(x, y), c)
-                }
-            }
-        }
-
         fun findChar(searchMe: Char): List<Point> {
             return data.flatMapIndexed { y, line ->
                 line.mapIndexed { x, char ->
@@ -32,6 +18,39 @@ object PositionUtil {
                 }
             }.filterNotNull()
         }
+
+        // This method assumes each line to have the same amount of elements
+        // This assumption is not checked anywhere
+        fun hasInBounds(p: Point): Boolean =
+            p.x in data[0].indices &&
+            p.y in data.indices
+
+        fun replacePointWith(point: Point, replaceWith: Char): Matrix {
+            val newData = this.map { p, c ->
+                if (p == point) replaceWith
+                else c
+            }
+
+            val newInputString = newData.joinToString(separator = "\n") {
+                it.joinToString(separator = "")
+            }
+
+            return fromInput(newInputString)
+        }
+
+        fun <T> map(f: (Point, Char) -> T): List<List<T>> {
+            return data.mapIndexed { y, line ->
+                line.mapIndexed { x, c ->
+                    f(Point(x, y), c)
+                }
+            }
+        }
+
+        fun <T> flatMap(f: (Point, Char) -> T): List<T> {
+            return map(f).flatten()
+        }
+
+        override fun toString(): String = data.joinToString(separator = "\n") { it.joinToString(separator = ",") }
 
         companion object {
             fun fromInput(raw: String): Matrix {

@@ -53,6 +53,18 @@ class PositionUtilTest : FunSpec({
                 }
             }
         }
+
+        context("replacePointWith") {
+            test("creates a new matrix with a replaced point") {
+                val newMatrix = testMatrix.replacePointWith(Point(1, 2), 'X')
+
+                newMatrix.toString() shouldBe """
+                    1,2,3
+                    4,5,6
+                    7,X,9
+                """.trimIndent()
+            }
+        }
     }
 })
 
