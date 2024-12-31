@@ -8,25 +8,40 @@ private typealias Ordering = List<Pair<Int, Int>>
 
 object Day5 : AoCSolution<Long, Long> {
     override fun star1(raw: String): Long {
-        val data = raw.asStringList()
-        val ordering = data
-            .filter { it.contains('|') }
-            .map { line ->
-                val (a, b) = line.split('|')
-                a.toInt() to b.toInt()
-            }
-
-        val pages: List<Page> = data
-            .filter { it.contains(',') }
-            .map { it.split(',').map { it.toInt() } }
+        val (ordering: Ordering, pages: List<Page>) = fetchAndPrepareData(raw)
 
         val validPages = pages.mapNotNull {
             if (it.isValidAccordingTo(ordering)) it else null
         }
 
-        val result = validPages.map { it[it.size / 2].toLong()}.sum()
+        val result = validPages.sumOf { it[it.size / 2].toLong() }
 
         return result
+    }
+
+    override fun star2(raw: String): Long {
+        val (ordering: Ordering, pages: List<Page>) = fetchAndPrepareData(raw)
+
+        val invalidPages = pages.mapNotNull {
+            if (it.isValidAccordingTo(ordering)) null else it
+        }
+
+        val fixedPages = invalidPages.map { it.sortedWith { x, y -> ordering.order(x, y) }}
+
+        val result = fixedPages.sumOf { it[it.size / 2].toLong() }
+
+        return result
+    }
+
+    /*
+     * Assumption: The orders defined in the ordering are describe direct pairs,
+     * e.g. (1, 5) means (1 comes _directly_ before 5)
+     */
+    private fun Ordering.order(a: Int, b: Int): Int {
+        if (this.contains(a to b)) return 1
+        if (this.contains(b to a)) return -1
+
+        TODO("This should not happen")
     }
 
     /*
@@ -50,7 +65,18 @@ object Day5 : AoCSolution<Long, Long> {
         return validPositions.all { it }
     }
 
-    override fun star2(raw: String): Long {
-        TODO()
+    private fun fetchAndPrepareData(raw: String): Pair<List<Pair<Int, Int>>, List<Page>> {
+        val data = raw.asStringList()
+        val ordering = data
+            .filter { it.contains('|') }
+            .map { line ->
+                val (a, b) = line.split('|')
+                a.toInt() to b.toInt()
+            }
+
+        val pages: List<Page> = data
+            .filter { it.contains(',') }
+            .map { it.split(',').map { it.toInt() } }
+        return Pair(ordering, pages)
     }
 }

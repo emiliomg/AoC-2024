@@ -11,8 +11,8 @@ class Day5Test : FunSpec({
                 "day5/example.txt" to 143
             ),
             puzzleStar1 = "day5/input.txt" to 5087,
-//            examplesStar2 = listOf("day5/example.txt" to 123),
-//            puzzleStar2 = "day5/input.txt" to 123
+            examplesStar2 = listOf("day5/example.txt" to 123),
+            puzzleStar2 = "day5/input.txt" to 4971
         )
     )
 })
