@@ -22,22 +22,23 @@ object Day6 : AoCSolution<Int, Int> {
         val (matrix, startingGuard) = fetchAndPrepareData(raw)
 
         val possiblePointsForNewObstacle = getVisitedPointsInMaze(matrix, startingGuard, listOf(startingGuard))
-            .guardPositions
-            .map { it.position }
-            .toSet()
+            .allPositions
             .minus(startingGuard.position)
 
-        val pointsForNewObstacle: Map<Point,Boolean> = possiblePointsForNewObstacle.map { newObstaclePosition ->
-            val newMatrix = matrix.replacePointWith(newObstaclePosition, OBSTACLE)
-            val (_, isLoop) = getVisitedPointsInMaze(newMatrix, startingGuard, listOf(startingGuard))
+        val pointsForNewObstacle: Map<Point,Boolean> =
+            possiblePointsForNewObstacle.associateWith { newObstaclePosition ->
+                val newMatrix = matrix.replacePointWith(newObstaclePosition, OBSTACLE)
+                val (_, isLoop) = getVisitedPointsInMaze(newMatrix, startingGuard, listOf(startingGuard))
 
-            newObstaclePosition to isLoop
-        }.toMap().filterValues { it }
+                isLoop
+            }.filterValues { it }
 
         return pointsForNewObstacle.size
     }
 
-    private data class MazeResult(val guardPositions: List<Guard>, val loopFound: Boolean)
+    private data class MazeResult(val guardPositions: List<Guard>, val loopFound: Boolean) {
+        val allPositions: Set<Point> = guardPositions.map { it.position }.toSet()
+    }
 
     // It is assumed that the current position is already part of the "step" list
     private tailrec fun getVisitedPointsInMaze(matrix: Matrix, guard: Guard, steps: List<Guard>): MazeResult {
