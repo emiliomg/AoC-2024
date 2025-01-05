@@ -5,8 +5,8 @@ import kotlin.String
 object StringUtil {
     fun String.asStringList(): List<String> = this.split("\n")
 
-    fun <T> String.asProcessedList(transform: String.() -> T): List<T> =
+    fun <T> String.asProcessedList(lineProcessor: (String) -> T): List<T> =
         this
             .asStringList()
-            .map { it.transform() }
+            .map { lineProcessor(it) }
 }

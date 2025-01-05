@@ -65,7 +65,7 @@ object Day2 : AoCSolution<Long, Long> {
         ASC, DESC, UNDECIDED;
     }
 
-    private fun fetchAndPrepareData(raw: String) = raw.asProcessedList {
-        this.split(" ").map { it.toLong() }
+    private fun fetchAndPrepareData(raw: String) = raw.asProcessedList { line ->
+        line.split(" ").map { it.toLong() }
     }
 }
