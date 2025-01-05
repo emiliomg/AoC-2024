@@ -6,7 +6,15 @@ import emiliomg.aoc.y2024.util.StringUtil.asProcessedList
 object Day7 : AoCSolution<Long, Long> {
     override fun star1(raw: String): Long {
         val equations: List<Pair<Long, List<Long>>> = fetchAndPrepareData(raw)
+        return processEquations(equations, OPRT.PART1)
+    }
 
+    override fun star2(raw: String): Long {
+        val equations: List<Pair<Long, List<Long>>> = fetchAndPrepareData(raw)
+        return processEquations(equations, OPRT.PART2)
+    }
+
+    private fun processEquations(equations: List<Pair<Long, List<Long>>>, allowedOperators: List<OPRT>): Long {
         fun step(nums: List<Long>, ops: List<OPRT>, acc: Long): List<Long> {
             if (nums.isEmpty()) return listOf(acc)
 
@@ -19,15 +27,11 @@ object Day7 : AoCSolution<Long, Long> {
         }
 
         val validTestValues = equations.mapNotNull { (expected, nums) ->
-            if (step(nums, OPRT.PART1, 0).contains(expected)) expected
+            if (step(nums, allowedOperators, 0).contains(expected)) expected
             else null
         }
 
         return validTestValues.sum()
-    }
-
-    override fun star2(raw: String): Long {
-        TODO()
     }
 
     private fun fetchAndPrepareData(raw: String): List<Pair<Long, List<Long>>> =
@@ -40,12 +44,14 @@ object Day7 : AoCSolution<Long, Long> {
 
     private enum class OPRT {
         ADD { override operator fun invoke(a: Long, b: Long): Long { return a + b } },
-        MULT { override operator fun invoke(a: Long, b: Long): Long { return a * b } };
+        MULT { override operator fun invoke(a: Long, b: Long): Long { return a * b } },
+        CONCAT { override operator fun invoke(a: Long, b: Long): Long { return (a.toString() + b.toString()).toLong() } };
 
         abstract operator fun invoke(a: Long, b: Long): Long
 
         companion object {
             val PART1 = listOf(ADD, MULT)
+            val PART2 = listOf(ADD, MULT, CONCAT)
         }
     }
 }
