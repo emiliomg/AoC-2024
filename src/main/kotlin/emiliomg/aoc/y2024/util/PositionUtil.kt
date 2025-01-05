@@ -1,63 +1,45 @@
 package emiliomg.aoc.y2024.util
 
-typealias Row = CharArray
-
 object PositionUtil {
 
-    class Matrix(val data: List<Row>) {
-        fun charAt(p: Point, defaultChar: Char = '.'): Char =
-            if (!hasInBounds(p))
-                defaultChar
-            else
-                data[p.y][p.x]
+    class Matrix(val data: HashMap<Point, Char>) {
+        fun charAt(p: Point, defaultChar: Char = EMPTY): Char =
+            data[p] ?: defaultChar
 
-        fun findChar(searchMe: Char): List<Point> {
-            return data.flatMapIndexed { y, line ->
-                line.mapIndexed { x, char ->
-                    if (char == searchMe) Point(x, y) else null
-                }
-            }.filterNotNull()
-        }
+        fun findChar(searchMe: Char): List<Point> =
+            data.filter { (_, c) -> c == searchMe }.keys.toList() // todo convert to set
 
         // This method assumes each line to have the same amount of elements
         // This assumption is not checked anywhere
         fun hasInBounds(p: Point): Boolean =
-            p.x in data[0].indices &&
-            p.y in data.indices
+            data.contains(p)
 
         fun replacePointWith(point: Point, replaceWith: Char): Matrix {
-            val newData = this.map { p, c ->
-                if (p == point) replaceWith
-                else c
-            }
+            val newData = HashMap(data)
+            newData[point] = replaceWith
 
-            val newInputString = newData.joinToString(separator = "\n") {
-                it.joinToString(separator = "")
-            }
-
-            return fromInput(newInputString)
+            return Matrix(newData)
         }
 
-        fun <T> map(f: (Point, Char) -> T): List<List<T>> {
-            return data.mapIndexed { y, line ->
-                line.mapIndexed { x, c ->
-                    f(Point(x, y), c)
-                }
-            }
-        }
-
-        fun <T> flatMap(f: (Point, Char) -> T): List<T> {
-            return map(f).flatten()
-        }
-
-        override fun toString(): String = data.joinToString(separator = "\n") { it.joinToString(separator = ",") }
+        fun <T> map(f: (Point, Char) -> T): List<T> =
+            data.map { (p, c) -> f(p, c) }
 
         companion object {
+
+            const val EMPTY = '.'
+
             fun fromInput(raw: String): Matrix {
                 val data = raw
                     .split("\n")
                     .map { line -> line.toCharArray() }
-                return Matrix(data)
+
+                val points = data.flatMapIndexed { y, line ->
+                    line.mapIndexed { x, c ->
+                        Point(x, y) to c
+                    }
+                }.toMap()
+
+                return Matrix(HashMap(points))
             }
         }
     }

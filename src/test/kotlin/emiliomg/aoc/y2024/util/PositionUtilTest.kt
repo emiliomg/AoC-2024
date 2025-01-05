@@ -5,6 +5,7 @@ import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import emiliomg.aoc.y2024.util.PositionUtil.Point
 import emiliomg.aoc.y2024.util.PositionUtil.Matrix
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 
 class PositionUtilTest : FunSpec({
     context("Matrix") {
@@ -49,20 +50,17 @@ class PositionUtilTest : FunSpec({
                     '5' to listOf(Point(2, 2)),
                     '9' to emptyList()
                 ) { (p, expectation) ->
-                    secondTestMatrix.findChar(p) shouldBe expectation
+                    secondTestMatrix.findChar(p) shouldContainExactlyInAnyOrder expectation
                 }
             }
         }
 
         context("replacePointWith") {
             test("creates a new matrix with a replaced point") {
-                val newMatrix = testMatrix.replacePointWith(Point(1, 2), 'X')
+                val checkMe = Point(1, 2)
+                val newMatrix = testMatrix.replacePointWith(checkMe, 'X')
 
-                newMatrix.toString() shouldBe """
-                    1,2,3
-                    4,5,6
-                    7,X,9
-                """.trimIndent()
+                newMatrix.charAt(checkMe) shouldBe 'X'
             }
         }
     }

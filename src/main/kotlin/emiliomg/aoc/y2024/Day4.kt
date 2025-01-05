@@ -8,7 +8,7 @@ object Day4 : AoCSolution<Int, Int> {
     override fun star1(raw: String): Int {
         val matrix = Matrix.fromInput(raw)
 
-        val result: List<Int> = matrix.flatMap { point, char ->
+        val result: List<Int> = matrix.map { point, char ->
             if (char != 'X') {
                 0
             } else {
@@ -33,7 +33,7 @@ object Day4 : AoCSolution<Int, Int> {
     override fun star2(raw: String): Int {
         val matrix = Matrix.fromInput(raw)
 
-        val result: List<Int> = matrix.flatMap { point, char ->
+        val result: List<Int> = matrix.map { point, char ->
             if (char != 'A') {
                 0
             } else {
