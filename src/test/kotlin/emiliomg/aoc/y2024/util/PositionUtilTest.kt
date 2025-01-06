@@ -1,11 +1,12 @@
 package emiliomg.aoc.y2024.util
 
+import emiliomg.aoc.y2024.util.PositionUtil.Matrix
+import emiliomg.aoc.y2024.util.PositionUtil.Point
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
-import io.kotest.matchers.shouldBe
-import emiliomg.aoc.y2024.util.PositionUtil.Point
-import emiliomg.aoc.y2024.util.PositionUtil.Matrix
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.maps.shouldMatchExactly
+import io.kotest.matchers.shouldBe
 
 class PositionUtilTest : FunSpec({
     context("Matrix") {
@@ -61,6 +62,18 @@ class PositionUtilTest : FunSpec({
                 val newMatrix = testMatrix.replacePointWith(checkMe, 'X')
 
                 newMatrix.charAt(checkMe) shouldBe 'X'
+            }
+        }
+
+        context("reverse") {
+            test("reverses a matrix") {
+                secondTestMatrix.reverse().shouldMatchExactly (
+                    '1' to { it shouldContainExactlyInAnyOrder listOf(Point(0, 0), Point(1, 0)) },
+                    '2' to { it shouldContainExactlyInAnyOrder listOf(Point(2, 0), Point(0, 1)) },
+                    '3' to { it shouldContainExactlyInAnyOrder listOf(Point(1, 1), Point(2, 1)) },
+                    '4' to { it shouldContainExactlyInAnyOrder listOf(Point(0, 2), Point(1, 2)) },
+                    '5' to { it shouldContainExactlyInAnyOrder listOf(Point(2, 2)) },
+                )
             }
         }
     }

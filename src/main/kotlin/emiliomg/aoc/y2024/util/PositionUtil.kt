@@ -24,6 +24,12 @@ object PositionUtil {
         fun <T> map(f: (Point, Char) -> T): List<T> =
             data.map { (p, c) -> f(p, c) }
 
+        fun reverse(): Map<Char, List<Point>> = data
+            .toList()
+            .filterNot { it.second == EMPTY }
+            .groupBy { it.second }
+            .mapValues { (_, v) -> v.map { it.first } }
+
         companion object {
 
             const val EMPTY = '.'
