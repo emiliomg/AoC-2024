@@ -1,6 +1,7 @@
 package emiliomg.aoc.y2024
 
 import emiliomg.aoc.y2024.util.AoCSolution
+import emiliomg.aoc.y2024.util.CollectionUtil.headAndTail
 import emiliomg.aoc.y2024.util.StringUtil.asProcessedList
 
 object Day7 : AoCSolution<Long, Long> {
@@ -18,7 +19,7 @@ object Day7 : AoCSolution<Long, Long> {
         fun step(nums: List<Long>, ops: List<OPRT>, acc: Long): List<Long> {
             if (nums.isEmpty()) return listOf(acc)
 
-            val (head, tail) = nums.first() to nums.drop(1)
+            val (head, tail) = nums.headAndTail()
 
             return ops.flatMap { op ->
                 val newAcc = op(acc, head)
